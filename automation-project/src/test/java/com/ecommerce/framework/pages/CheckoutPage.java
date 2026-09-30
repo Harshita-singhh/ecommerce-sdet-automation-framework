@@ -3,11 +3,12 @@ package com.ecommerce.framework.pages;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.ecommerce.framework.utils.ConfigLoader;
 
 public class CheckoutPage {
     private final WebDriver driver;
@@ -42,12 +43,13 @@ public class CheckoutPage {
     }
 
     public void clickContinue() {
+        String overviewUrl = ConfigLoader.getBaseUrl() + "checkout-step-two.html";
         try {
             WebElement button = wait.until(ExpectedConditions.elementToBeClickable(continueButton));
             button.click();
             wait.until(ExpectedConditions.urlContains("checkout-step-two.html"));
         } catch (Exception e) {
-            driver.get("https://www.saucedemo.com/checkout-step-two.html");
+            driver.get(overviewUrl);
             wait.until(ExpectedConditions.urlContains("checkout-step-two.html"));
         }
     }
@@ -59,12 +61,13 @@ public class CheckoutPage {
     }
 
     public void clickFinish() {
+        String completionUrl = ConfigLoader.getBaseUrl() + "checkout-complete.html";
         try {
             WebElement button = wait.until(ExpectedConditions.elementToBeClickable(finishButton));
             button.click();
             wait.until(ExpectedConditions.urlContains("checkout-complete.html"));
         } catch (Exception e) {
-            driver.get("https://www.saucedemo.com/checkout-complete.html");
+            driver.get(completionUrl);
             wait.until(ExpectedConditions.urlContains("checkout-complete.html"));
         }
     }

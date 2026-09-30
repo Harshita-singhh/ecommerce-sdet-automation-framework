@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.ecommerce.framework.utils.ConfigLoader;
+
 public class ProductsPage {
     private final WebDriver driver;
     private final WebDriverWait wait;
@@ -55,12 +57,13 @@ public class ProductsPage {
     }
 
     public void openCart() {
+        String cartUrl = ConfigLoader.getBaseUrl() + "cart.html";
         try {
             WebElement cart = wait.until(ExpectedConditions.elementToBeClickable(cartLink));
             cart.click();
             wait.until(ExpectedConditions.urlContains("cart.html"));
         } catch (Exception e) {
-            driver.get("https://www.saucedemo.com/cart.html");
+            driver.get(cartUrl);
             wait.until(ExpectedConditions.urlContains("cart.html"));
         }
     }

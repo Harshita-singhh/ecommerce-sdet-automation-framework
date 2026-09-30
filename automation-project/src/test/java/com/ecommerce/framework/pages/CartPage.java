@@ -4,11 +4,12 @@ import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.ecommerce.framework.utils.ConfigLoader;
 
 public class CartPage {
     private final WebDriver driver;
@@ -50,12 +51,13 @@ public class CartPage {
     }
 
     public void clickCheckout() {
+        String checkoutUrl = ConfigLoader.getBaseUrl() + "checkout-step-one.html";
         try {
             WebElement button = wait.until(ExpectedConditions.elementToBeClickable(checkoutButton));
             button.click();
             wait.until(ExpectedConditions.urlContains("checkout-step-one.html"));
         } catch (Exception e) {
-            driver.get("https://www.saucedemo.com/checkout-step-one.html");
+            driver.get(checkoutUrl);
             wait.until(ExpectedConditions.urlContains("checkout-step-one.html"));
         }
     }

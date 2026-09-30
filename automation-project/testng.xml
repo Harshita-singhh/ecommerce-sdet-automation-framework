@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Ecommerce Automation Suite" verbose="1">
+    <test name="UI and API tests">
+        <packages>
+            <package name="com.ecommerce.framework"/>
+            <package name="com.ecommerce.framework.tests"/>
+            <package name="com.ecommerce.framework.api.tests"/>
+        </packages>
+    </test>
+</suite>
