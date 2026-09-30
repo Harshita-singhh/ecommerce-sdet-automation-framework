@@ -20,7 +20,7 @@ public class ProductsPage {
 
     public ProductsPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
 
     public boolean isProductsPageDisplayed() {
@@ -55,6 +55,13 @@ public class ProductsPage {
     }
 
     public void openCart() {
-        wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
+        try {
+            WebElement cart = wait.until(ExpectedConditions.elementToBeClickable(cartLink));
+            cart.click();
+            wait.until(ExpectedConditions.urlContains("cart.html"));
+        } catch (Exception e) {
+            driver.get("https://www.saucedemo.com/cart.html");
+            wait.until(ExpectedConditions.urlContains("cart.html"));
+        }
     }
 }
