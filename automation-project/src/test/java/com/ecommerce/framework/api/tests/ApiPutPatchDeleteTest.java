@@ -6,6 +6,7 @@ import java.util.Map;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.ecommerce.framework.api.api.ApiConstants;
 import com.ecommerce.framework.api.api.BaseApiTest;
 
 import io.restassured.http.ContentType;
@@ -27,7 +28,7 @@ public class ApiPutPatchDeleteTest extends BaseApiTest {
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
-                .put("/posts/1");
+                .put(ApiConstants.POSTS_ENDPOINT + "/1");
 
         response.then()
                 .statusCode(200)
@@ -52,7 +53,7 @@ public class ApiPutPatchDeleteTest extends BaseApiTest {
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
-                .patch("/posts/1");
+                .patch(ApiConstants.POSTS_ENDPOINT + "/1");
 
         response.then()
                 .statusCode(200)
@@ -66,7 +67,7 @@ public class ApiPutPatchDeleteTest extends BaseApiTest {
     public void deletePostShouldReturnSuccess() {
         Response response = given()
                 .when()
-                .delete("/posts/1");
+                .delete(ApiConstants.POSTS_ENDPOINT + "/1");
 
         response.then()
                 .statusCode(200)

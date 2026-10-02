@@ -1,10 +1,8 @@
-# Maven build output
+# Generated build, test, report, and screenshot output
 target/
-automation-project/target/
-
-# Test reports and screenshots
-automation-project/target/surefire-reports/
-automation-project/target/screenshots/
+test-output/
+screenshots/
+reports/
 
 # Compiled class files
 *.class

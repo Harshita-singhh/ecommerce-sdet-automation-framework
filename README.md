@@ -1,7 +1,7 @@
 # E-commerce SDET Automation Framework
 
 ## Overview
-This project is a Java-based Selenium and REST Assured automation framework for validating a typical e-commerce checkout flow and API interactions. It follows a clean Page Object Model for UI automation and keeps the API testing simple and interview-friendly.
+This Java/Maven project demonstrates UI automation for the SauceDemo storefront and API tests against JSONPlaceholder. The UI suite uses Selenium WebDriver, TestNG, and the Page Object Model (POM); API tests use REST Assured.
 
 ## Tech Stack
 - Java 17
@@ -10,85 +10,88 @@ This project is a Java-based Selenium and REST Assured automation framework for 
 - TestNG 7.11.0
 - REST Assured 5.5.0
 - Jackson Databind 2.17.2
-- Chrome browser (headless execution in CI)
+- Chrome WebDriver (headless execution)
 
 ## Architecture
-- UI tests use page objects under `src/test/java/com/ecommerce/framework/pages`
-- Test classes live under `src/test/java/com/ecommerce/framework/tests`
-- API tests live under `src/test/java/com/ecommerce/framework/api/tests`
-- Shared setup and configuration live in `BaseTest`, `BaseApiTest`, and `ConfigLoader`
-- TestNG listener captures failure screenshots automatically
+- UI page objects are in `automation-project/src/test/java/com/ecommerce/framework/pages`; UI tests and shared browser setup are in `.../tests`.
+- API tests and their shared REST Assured setup are in `.../api/tests` and `.../api/api`.
+- `ConfigLoader` reads the shared test settings from `automation-project/src/test/resources/config.properties`.
+- `ScreenshotListener` captures screenshots when Selenium tests fail.
+- `automation-project/testng.xml` defines the TestNG suite used by Maven Surefire.
+
+The UI tests cover Chrome only. Cross-browser and parallel execution are not configured.
 
 ## UI Coverage
-- Login flows
-- Product listing checks
-- Add/remove cart actions
-- Cart verification
-- Checkout happy path
+- Valid and invalid login
+- Product listing and visibility
+- Add/remove product from the cart
+- Cart contents and removal
+- Successful checkout flow
 
 ## API Coverage
-- GET /posts
-- GET /posts/{id}
-- GET /posts?userId={id}
-- POST /posts
-- PUT /posts/{id}
-- PATCH /posts/{id}
-- DELETE /posts/{id}
-- Negative validation for invalid IDs and empty results
+- `GET /posts`, `GET /posts/{id}`, and `GET /posts?userId={id}`
+- `POST /posts`, `PUT /posts/{id}`, `PATCH /posts/{id}`, and `DELETE /posts/{id}`
+- Negative/read-filter checks for an unknown post ID and comments for a missing post ID
 
 ## Project Structure
 ```text
 .
-├── .github/workflows/maven-tests.yml
+├── .github/
+│   └── workflows/maven-tests.yml
 ├── automation-project/
 │   ├── pom.xml
 │   ├── testng.xml
-│   └── src/
-│       ├── test/java/com/ecommerce/framework/
-│       │   ├── api/
+│   └── src/test/
+│       ├── java/com/ecommerce/framework/
+│       │   ├── api/api/ and api/tests/
 │       │   ├── listeners/
 │       │   ├── pages/
 │       │   ├── tests/
 │       │   └── utils/
-│       └── test/resources/config.properties
+│       └── resources/config.properties
 ├── .gitignore
 ├── README.md
-└── .vscode/
 ```
 
-## How to Run
-From the project root:
+## Configuration
+The test endpoints are centralized in `automation-project/src/test/resources/config.properties`:
 
+```properties
+baseUrl=https://www.saucedemo.com/
+apiBaseUrl=https://jsonplaceholder.typicode.com
+```
+
+## Run Tests
+
+Run the full TestNG suite from the Maven project directory:
 ```bash
 cd automation-project
 mvn clean test
 ```
 
-The project is already wired to the TestNG suite in `automation-project/testng.xml`, so the standard entry point remains:
-
+Run only the cart test:
 ```bash
-cd automation-project
-mvn clean test
+mvn -Dtest=CartTest test
 ```
 
 ## Reporting
-TestNG generates the default HTML XML reports under:
+Maven Surefire and TestNG produce HTML and XML reports under:
 
 ```text
 automation-project/target/surefire-reports/
 ```
 
 ## Screenshots
-When a Selenium test fails, the listener stores screenshots under:
+The TestNG listener saves screenshots for failed Selenium tests under:
 
 ```text
 automation-project/target/screenshots/
 ```
 
-## CI/CD
-GitHub Actions runs the Maven suite on push and pull request and uploads the generated test reports and screenshots as build artifacts.
+Successful runs normally have no failure screenshots. GitHub Actions still attempts to upload both report and screenshot paths after the test step (`if: always()`); missing paths are warnings rather than workflow failures. The artifact is named `test-reports`.
 
-## Notes
-- The framework keeps the original working UI automation intact.
-- API tests use JSONPlaceholder for stable, interview-friendly request/response validation.
-- No unnecessary frameworks or infrastructure were introduced.
+## GitHub Actions
+The workflow at `.github/workflows/maven-tests.yml` runs on pushes and pull requests targeting `main`. It uses Java 17 with Temurin and Maven caching, runs `mvn clean test`, and uploads Surefire reports and any failure screenshots as an artifact.
+
+## JSONPlaceholder Limitation
+JSONPlaceholder is a mock API. The POST, PUT, PATCH, and DELETE tests validate the returned status and response data, but those mutations are simulated and are not persisted as changes to the API's stored data.

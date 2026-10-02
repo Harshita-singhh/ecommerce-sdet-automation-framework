@@ -5,6 +5,7 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.ecommerce.framework.api.api.ApiConstants;
 import com.ecommerce.framework.api.api.BaseApiTest;
 
 import io.restassured.response.Response;
@@ -17,7 +18,7 @@ public class ApiGetTest extends BaseApiTest {
     public void getAllPostsShouldReturn200() {
         Response response = given()
                 .when()
-                .get("/posts");
+                .get(ApiConstants.POSTS_ENDPOINT);
 
         response.then()
                 .statusCode(200)
@@ -32,7 +33,7 @@ public class ApiGetTest extends BaseApiTest {
         Response response = given()
                 .pathParam("id", 1)
                 .when()
-                .get("/posts/{id}");
+                .get(ApiConstants.POSTS_ENDPOINT + "/{id}");
 
         response.then()
                 .statusCode(200)
@@ -53,7 +54,7 @@ public class ApiGetTest extends BaseApiTest {
         Response response = given()
                 .queryParam("userId", 1)
                 .when()
-                .get("/posts");
+                .get(ApiConstants.POSTS_ENDPOINT);
 
         response.then()
                 .statusCode(200)
@@ -72,7 +73,7 @@ public class ApiGetTest extends BaseApiTest {
     public void invalidPostIdShouldReturn404() {
         Response response = given()
                 .when()
-                .get("/posts/999999");
+                .get(ApiConstants.POSTS_ENDPOINT + "/999999");
 
         response.then()
                 .statusCode(404)
@@ -87,7 +88,7 @@ public class ApiGetTest extends BaseApiTest {
         Response response = given()
                 .queryParam("postId", 999999)
                 .when()
-                .get("/comments");
+                .get(ApiConstants.COMMENTS_ENDPOINT);
 
         response.then()
                 .statusCode(200)
@@ -102,7 +103,7 @@ public class ApiGetTest extends BaseApiTest {
         Response response = given()
                 .pathParam("id", 1)
                 .when()
-                .get("/posts/{id}");
+                .get(ApiConstants.POSTS_ENDPOINT + "/{id}");
 
         int extractedId = response.jsonPath().getInt("id");
 

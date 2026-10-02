@@ -6,6 +6,7 @@ import java.util.Map;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.ecommerce.framework.api.api.ApiConstants;
 import com.ecommerce.framework.api.api.BaseApiTest;
 
 import io.restassured.http.ContentType;
@@ -26,7 +27,7 @@ public class ApiPostTest extends BaseApiTest {
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
-                .post("/posts");
+                .post(ApiConstants.POSTS_ENDPOINT);
 
         response.then()
                 .statusCode(201)
