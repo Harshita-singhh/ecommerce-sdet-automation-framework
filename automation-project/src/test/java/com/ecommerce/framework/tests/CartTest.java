@@ -23,6 +23,7 @@ public class CartTest extends BaseTest {
 
         CartPage cartPage = new CartPage(driver);
         Assert.assertTrue(cartPage.isCartPageDisplayed(), "Cart page should be displayed");
+        cartPage.waitForProduct(PRODUCT_NAME);
         Assert.assertTrue(cartPage.isProductPresent(PRODUCT_NAME),
                 "Selected product should be present in the cart");
         Assert.assertEquals(cartPage.getCartItemCount(), 1,

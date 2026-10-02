@@ -19,6 +19,7 @@ public class ProductsPage {
     private final By productItems = By.className("inventory_item");
     private final By cartLink = By.cssSelector(".shopping_cart_link");
     private final By cartBadge = By.cssSelector(".shopping_cart_badge");
+    private final By cartTitle = By.cssSelector(".title");
 
     public ProductsPage(WebDriver driver) {
         this.driver = driver;
@@ -39,6 +40,7 @@ public class ProductsPage {
                 ".//div[contains(@class,'inventory_item') and .//div[contains(@class,'inventory_item_name') and normalize-space(.)='" + productName + "']]//button");
         WebElement addButton = wait.until(ExpectedConditions.elementToBeClickable(productLocator));
         addButton.click();
+        wait.until(ExpectedConditions.textToBe(productLocator, "Remove"));
     }
 
     public void removeProductFromCart(String productName) {
@@ -62,9 +64,11 @@ public class ProductsPage {
             WebElement cart = wait.until(ExpectedConditions.elementToBeClickable(cartLink));
             cart.click();
             wait.until(ExpectedConditions.urlContains("cart.html"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(cartTitle));
         } catch (Exception e) {
             driver.get(cartUrl);
             wait.until(ExpectedConditions.urlContains("cart.html"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(cartTitle));
         }
     }
 }

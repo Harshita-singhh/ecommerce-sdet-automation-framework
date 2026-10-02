@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -25,10 +26,8 @@ public class CartPage {
     }
 
     public boolean isCartPageDisplayed() {
-        return wait.until(ExpectedConditions.or(
-                ExpectedConditions.urlContains("cart.html"),
-                ExpectedConditions.visibilityOfElementLocated(cartTitle)))
-                != null;
+        wait.until(ExpectedConditions.urlContains("cart.html"));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(cartTitle)).isDisplayed();
     }
 
     public int getCartItemCount() {
@@ -36,18 +35,28 @@ public class CartPage {
     }
 
     public boolean isProductPresent(String productName) {
-        By productLocator = By.xpath(
-                ".//*[contains(@class,'cart_item') and .//*[contains(text(), '" + productName + "')]]");
-        List<WebElement> items = driver.findElements(productLocator);
+        List<WebElement> items = driver.findElements(cartItemForProduct(productName));
         return !items.isEmpty();
     }
 
+    public void waitForProduct(String productName) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(cartItemForProduct(productName)));
+    }
+
     public void removeProduct(String productName) {
-        By productLocator = By.xpath(
-                ".//*[contains(@class,'cart_item') and .//*[contains(text(), '" + productName + "')]]//button");
-        WebElement removeButton = wait.until(ExpectedConditions.elementToBeClickable(productLocator));
-        removeButton.click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(productLocator));
+        By productRow = cartItemForProduct(productName);
+        WebElement row = wait.until(ExpectedConditions.visibilityOfElementLocated(productRow));
+        WebElement removeButton = wait.until(ExpectedConditions.elementToBeClickable(
+                row.findElement(By.tagName("button"))));
+        // In headless Chrome, WebDriver pointer and keyboard clicks did not trigger this React handler.
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", removeButton);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(productRow));
+    }
+
+    private By cartItemForProduct(String productName) {
+        return By.xpath(
+                "//div[@class='cart_item' and .//div[@class='inventory_item_name' and normalize-space(.)='"
+                        + productName + "']]");
     }
 
     public void clickCheckout() {
